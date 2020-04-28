@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MovingBlocks
+ * Copyright 2020 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.terasology.launcher.game;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.terasology.launcher.TestingUtils;
 import org.terasology.launcher.packages.Package;
 import org.terasology.launcher.util.JavaHeapSize;
 import org.terasology.launcher.util.LogLevel;
@@ -32,6 +31,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.terasology.launcher.TestingUtils.hasItemsFrom;
 
 public class TestRunGameTask {
     static final String JAVA_ARG_1 = "-client";
@@ -72,6 +72,9 @@ public class TestRunGameTask {
     @Test
     public void testJre() {
         RunGameTask task = newTask();
+        // This is the sort of test where the code under test and the expectation are just copies
+        // of the same source. But since there's a plan to separate the launcher runtime from the
+        // game runtime, the runtime location seemed like a good thing to specify in its own test.
         assertTrue(task.getRuntimePath().startsWith(Path.of(System.getProperty("java.home"))));
     }
 
@@ -84,9 +87,11 @@ public class TestRunGameTask {
         assertNotNull(processBuilder.directory());
         assertEquals(gamePath, processBuilder.directory().toPath());
         assertThat(processBuilder.command(), hasItem(gameJar.toString()));
-        assertThat(processBuilder.command(), TestingUtils.hasItemsFrom(gameParams));
-        assertThat(processBuilder.command(), TestingUtils.hasItemsFrom(javaParams));
+        assertThat(processBuilder.command(), hasItemsFrom(gameParams));
+        assertThat(processBuilder.command(), hasItemsFrom(javaParams));
         // TODO: heap min, heap max, log level
+        // could parameterize this test for the things that are optional?
+        // heap min, heap max, log level, gameParams and javaParams are all optional.
     }
 
 }

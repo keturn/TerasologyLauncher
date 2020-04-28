@@ -45,6 +45,17 @@ final class RunGameTask extends Task<Void> {
      */
     @Override
     protected Void call() throws Exception {
+        // start subprocess
+        // monitor output (and pass through to logs)
+        // start a countdown
+        // stopped before countdown? fail task with error message
+        // still running? okay, update progress
+
+        // when process exits, finish task
+
+        // if task gets cancelled, end process
+
+
         return null;
     }
 
