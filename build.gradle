@@ -113,7 +113,8 @@ dependencies {
     }
 
     // These dependencies are only needed for running tests
-    testImplementation group: 'junit', name: 'junit', version: '4.11'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation group: 'junit', name: 'junit', version: '4.13'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.26.0'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.26.0' // For final classes
 
