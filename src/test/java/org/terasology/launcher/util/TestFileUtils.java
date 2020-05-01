@@ -16,6 +16,7 @@
 
 package org.terasology.launcher.util;
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -24,15 +25,17 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.spf4j.log.Level;
+import org.spf4j.test.log.TestLoggers;
+import org.spf4j.test.matchers.LogMatchers;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -189,8 +192,14 @@ public class TestFileUtils {
         assertTrue(Files.exists(tempFile));
 
         // DirectoryNotEmptyException will be logged but not thrown
+        var loggedException = TestLoggers.sys().expect("", Level.ERROR,
+                LogMatchers.hasMatchingExtraThrowable(Matchers.instanceOf(DirectoryNotEmptyException.class))
+        );
+
         FileUtils.deleteFileSilently(tempDirectory);
+
         assertTrue(Files.exists(tempDirectory));
+        loggedException.assertObservation();
     }
 
 }
